@@ -86,6 +86,13 @@ class Gui:
 
 			]
 		self.gui_image = pygame.image.load("images/gui.png")
+		self.barrier = []
+		self.field = []
+		self.indicator = [[12, 12]]
+		self.win = pygame.image.load("images/win.png")
+		self.lose = pygame.image.load("images/lose.png")
+		self.game = "GAME"
+
 	def create_image(self):
 		"""Создает изображение на основании списка"""
 		screen = pygame.Surface((441, 441), pygame.SRCALPHA, 32)
@@ -103,3 +110,39 @@ class Gui:
 	def draw_level(self, window):
 		"""Отрисовывает уровень игры"""
 		window.blit(self.gui_image, (0, 0))
+
+	def init_field(self):
+		"""Заполняет списки с координатами"""
+		x = 1
+		y = 1
+		for i in self.level:
+			if i == 0:
+				self.barrier.append([x, y])
+			elif i == 1 and y != 12:
+				self.field.append([x,y])
+			x += 11
+			if x == 441:
+				y += 11
+				x = 1
+
+	def get_new_indicator(self):
+		"""Заполняет список координатами индикатора"""
+		self.indicator.append([self.indicator[-1][0] + 11, 12])
+
+	def draw_indicator(self, window):
+		for i in self.indicator:
+			pygame.draw.rect(window, pygame.Color("Green"), pygame.Rect(i[0], i[1], 10, 10))
+	def draw_win(self, window):
+		"""Создание победного экрана"""
+		window.blit(self.win, (23, 100))
+
+	def draw_lose(self, window):
+		window.blit(self.lose, (23, 100))
+
+	def check_game(self):
+		"""Отслеживает выиграл или проиграл игрок"""
+		if len(self.indicator) == 0:
+			self.game = "LOSE"
+		elif len(self.indicator) == 37:
+			self.game = "WIN"
+			
